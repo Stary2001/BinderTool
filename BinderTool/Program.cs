@@ -601,6 +601,22 @@ namespace BinderTool
             string fileDirectory = Path.GetDirectoryName(filePath) ?? string.Empty;
             string fileName = Path.GetFileName(filePath) ?? string.Empty;
             string key = null;
+
+            // hack: bhd5 may already be decrypted!
+            FileStream fs = File.Open(filePath, FileMode.Open);
+            MemoryStream ms = new MemoryStream();
+            fs.CopyTo(ms);
+            fs.Close();
+            ms.Seek(0, SeekOrigin.Begin);
+            string bhd5_sig;
+            if(TryGetAsciiSignature(ms, 4, out bhd5_sig))
+            {
+                if(bhd5_sig == "BHD5")
+                {
+                    return ms;
+                }
+            }
+
             switch (version)
             {
                 case GameVersion.DarkSouls2:

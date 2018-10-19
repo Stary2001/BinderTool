@@ -136,6 +136,19 @@ namespace BinderTool
                 return (FileType.EncryptedBhd, GameVersion.DarkSouls2);
             }
 
+            // Switch shit
+            // dvdbnd0.bhd5
+            // dvdbnd0.bdt
+            if (Regex.IsMatch(fileName, @"^dvdbnd\d\.bdt$", RegexOptions.IgnoreCase))
+            {
+                return (FileType.EncryptedBdt, GameVersion.DarkSouls3);
+            }
+
+            if (Regex.IsMatch(fileName, @"^dvdbnd\d\.bhd5?$", RegexOptions.IgnoreCase))
+            {
+                return (FileType.Bhd, GameVersion.DarkSouls3);
+            }
+
             // file.bdt
             // file.hkxbdt
             // file.tpfbdt

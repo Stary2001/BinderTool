@@ -12,23 +12,33 @@ namespace BinderTool.Core.Bhd5
         public Bhd5SaltedShaHash ShaHash { get; private set; }
         public bool IsEncrypted => AesKey != null;
 
-        public static Bhd5BucketEntry Read(BinaryReader reader, GameVersion version)
+        public static Bhd5BucketEntry Read(BinaryReader reader, GameVersion version, int bhdVersion)
         {
             Bhd5BucketEntry result = new Bhd5BucketEntry();
             result.FileNameHash = reader.ReadUInt32();
             result.PaddedFileSize = reader.ReadUInt32();
             result.FileOffset = reader.ReadInt64();
-            long saltedHashOffset = reader.ReadInt64();
-            long aesKeyOffset = reader.ReadInt64();
+            long saltedHashOffset = 0;
+            long aesKeyOffset = 0;
 
-            switch (version)
+            if (bhdVersion == 511)
             {
-                case GameVersion.DarkSouls3:
-                    result.FileSize = reader.ReadInt64();
-                    break;
-                default:
-                    result.FileSize = result.PaddedFileSize;
-                    break;
+                saltedHashOffset = reader.ReadInt64();
+                aesKeyOffset = reader.ReadInt64();
+
+                switch (version)
+                {
+                    case GameVersion.DarkSouls3:
+                        result.FileSize = reader.ReadInt64();
+                        break;
+                    default:
+                        result.FileSize = result.PaddedFileSize;
+                        break;
+                }
+            }
+            else
+            {
+                result.FileSize = result.PaddedFileSize;
             }
 
             if (saltedHashOffset != 0)

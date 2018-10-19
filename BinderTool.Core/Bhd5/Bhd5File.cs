@@ -31,12 +31,21 @@ namespace BinderTool.Core.Bhd5
             int size = reader.ReadInt32(); // excluding sizeof(signature)
             int bucketDirectoryEntryCount = reader.ReadInt32();
             int bucketDirectoryOffset = reader.ReadInt32();
-            int saltLength = reader.ReadInt32();
-            string salt = new string(reader.ReadChars(saltLength));
 
+
+            // dks switch
+            if (bhdVersion == 255)
+            {
+                reader.Seek(0x20, SeekOrigin.Begin);
+            }
+            else
+            {
+                int saltLength = reader.ReadInt32();
+                string salt = new string(reader.ReadChars(saltLength));
+            }
             for (int i = 0; i < bucketDirectoryEntryCount; i++)
             {
-                result._buckets.Add(Bhd5Bucket.Read(reader, version));
+                result._buckets.Add(Bhd5Bucket.Read(reader, version, bhdVersion));
             }
 
             return result;

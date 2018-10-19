@@ -18,19 +18,26 @@ namespace BinderTool.Core.Bhd5
             return _entries.AsEnumerable();
         }
 
-        public static Bhd5Bucket Read(BinaryReader reader, GameVersion version)
+        public static Bhd5Bucket Read(BinaryReader reader, GameVersion version, int bhdVersion)
         {
             Bhd5Bucket result = new Bhd5Bucket();
 
             int bucketEntryCount = reader.ReadInt32();
+
+            if (bhdVersion == 255)
+                reader.ReadInt32();
+
             int bucketOffset = reader.ReadInt32();
+
+            if (bhdVersion == 255)
+                reader.ReadInt32();
 
             long currentPosition = reader.GetPosition();
             reader.Seek(bucketOffset, SeekOrigin.Begin);
 
             for (int i = 0; i < bucketEntryCount; i++)
             {
-                result._entries.Add(Bhd5BucketEntry.Read(reader, version));
+                result._entries.Add(Bhd5BucketEntry.Read(reader, version, bhdVersion));
             }
 
             reader.Seek(currentPosition, SeekOrigin.Begin);
