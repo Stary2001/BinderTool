@@ -62,6 +62,8 @@
     <Compile Include="Bhd5\Bhd5SaltedShaHash.cs" />
     <Compile Include="Bhf4\Bhf4Entry.cs" />
     <Compile Include="Bhf4\Bhf4File.cs" />
+    <Compile Include="Bnd3\Bnd3File.cs" />
+    <Compile Include="Bnd3\Bnd3FileEntry.cs" />
     <Compile Include="Bnd4\Bnd4File.cs" />
     <Compile Include="Bnd4\Bnd4FileEntry.cs" />
     <Compile Include="CryptographyUtility.cs" />

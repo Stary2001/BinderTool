@@ -11,7 +11,10 @@ namespace BinderTool
     {
         private static readonly string[] VirtualRoots = {
             @"N:\SPRJ\data\",
-            @"N:\FDP\data\"
+            @"N:\FDP\data\",
+            @"N:\FRPG\data\",
+            @"n:\FRPG\data\",
+            @"N:\FRPG\Source\"
         };
 
         private static readonly string[] PhysicalRootsDs3 = {

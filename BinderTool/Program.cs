@@ -208,6 +208,12 @@ namespace BinderTool
                             }
                         }
 
+                        if(extension == ".bnd")
+                        {
+                            UnpackBnd3File(data, options.OutputPath);
+                            continue; // don't actually unpack bnds
+                        }
+
                         Debug.WriteLine(
                             "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}",
                             fileNameWithoutExtension,
@@ -311,11 +317,17 @@ namespace BinderTool
         {
             switch (signature)
             {
+                case "BND3":
+                    extension = ".bnd";
+                    return true;
                 case "BND4":
                     extension = ".bnd";
                     return true;
                 case "BHF4":
                     extension = ".bhd";
+                    return true;
+                case "BDF3":
+                    extension = ".bdt";
                     return true;
                 case "BDF4":
                     extension = ".bdt";
@@ -435,6 +447,23 @@ namespace BinderTool
         private static void UnpackBndFile(Stream inputStream, string outputPath)
         {
             Bnd4File file = Bnd4File.ReadBnd4File(inputStream);
+
+            foreach (var entry in file.Entries)
+            {
+                string fileName = FileNameDictionary.NormalizeFileName(entry.FileName);
+                string outputFilePath = Path.Combine(outputPath, fileName);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFilePath));
+                File.WriteAllBytes(outputFilePath, entry.EntryData);
+            }
+        }
+
+        private static void UnpackBnd3File(Stream inputStream, string outputPath)
+        {
+            Bnd3File file = Bnd3File.ReadBnd3File(inputStream);
+
+            outputPath = Path.Combine(outputPath, "arc");
+            Directory.CreateDirectory(outputPath);
 
             foreach (var entry in file.Entries)
             {
